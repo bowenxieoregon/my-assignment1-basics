@@ -48,3 +48,5 @@ gunzip owt_valid.txt.gz
 cd ..
 ```
 
+Jun 27, 2026 - I started doing the homework
+
