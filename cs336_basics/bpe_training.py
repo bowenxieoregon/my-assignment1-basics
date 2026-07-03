@@ -101,6 +101,7 @@ def training(
     merges = []
 
     pairs_count = defaultdict(dict)
+    pair_freq = defaultdict(int)
     word_state = {}
 
     def current_pair(word: tuple[bytes, ...], idx: int):
@@ -114,11 +115,15 @@ def training(
         pair = current_pair(word, idx)
         if pair:
             pairs_count[pair][(word, idx)] = [True, freq_dict[word], left_pair, right_pair]
+            pair_freq[pair] += freq_dict[word]
         return pair
 
     def deactivate_pair(pair, word: tuple[bytes, ...], idx: int):
         if pair and (word, idx) in pairs_count.get(pair, {}):
-            pairs_count[pair][(word, idx)][0] = False
+            info = pairs_count[pair][(word, idx)]
+            if info[0]:
+                info[0] = False
+                pair_freq[pair] -= info[1]
 
     def update_left(pair, word: tuple[bytes, ...], idx: int, left_pair):
         if pair and (word, idx) in pairs_count.get(pair, {}):
@@ -181,26 +186,27 @@ def training(
             if prev_pair:
                 pairs_count[prev_pair][(word_bytes, prev_idx)][-1] = pair
             pairs_count[pair][(word_bytes, i)] = [True, freq_dict[word_bytes], prev_pair, ""]
+            pair_freq[pair] += freq_dict[word_bytes]
             prev_pair = pair
             prev_idx = i
             
     total_epoch = vocab_size - len(vocabs.items())
     for epoch in range(total_epoch):
-        for pair in list(pairs_count.keys()):
-            if sum(sub_info[1] for sub_info in pairs_count[pair].values() if sub_info[0]) == 0:
-                pairs_count.pop(pair)
-        if not pairs_count:
+        if not pair_freq:
             break
-        max_pair = max((sum([(sub_info[1] * sub_info[0]) for _, sub_info in info.items()]), pair) for pair, info in pairs_count.items())[1]
+        max_count, max_pair = max((count, pair) for pair, count in pair_freq.items())
+        if max_count == 0:
+            break
         new_vocab = max_pair[0] + max_pair[1]
         vocabs[257 + epoch] = new_vocab
         merges.append(max_pair)
         # print(f"merging: {max_pair}")
-        # print(f"new vocab: {new_vocab}")
+        print(f"new vocab: {new_vocab}")
         for (word, idx), info in list(pairs_count[max_pair].items()):
             if info[0]:
                 merge_at(word, idx, max_pair, new_vocab)
         pairs_count.pop(max_pair, None)
+        pair_freq.pop(max_pair, None)
 
     return vocabs, merges 
 
