@@ -48,5 +48,6 @@ gunzip owt_valid.txt.gz
 cd ..
 ```
 
-Jun 27, 2026 - I started doing the homework
+June 27, 2026 - I started doing the homework
 
+July 2, 2026 - Finally make BPE training code fully work. My initial code could pass the pytest, but failed to be trained on very large corpus. But my current code works. When the input data is very large, many buried issues will appear. Testing is really important.
