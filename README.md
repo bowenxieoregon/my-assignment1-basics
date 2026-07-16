@@ -51,3 +51,5 @@ cd ..
 June 27, 2026 - I started doing the homework
 
 July 2, 2026 - Finally make BPE training code fully work. My initial code could pass the pytest, but failed to be trained on very large corpus. But my current code works. When the input data is very large, many buried issues will appear. Testing is really important.
+
+July 15, 2026 - Finished all BPE related part. Too busy recently, plan to accelerate the progress now.
