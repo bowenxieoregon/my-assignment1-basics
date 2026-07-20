@@ -48,8 +48,17 @@ gunzip owt_valid.txt.gz
 cd ..
 ```
 
+
+## Implementation Log 
+---
 June 27, 2026 - I started doing the homework
 
 July 2, 2026 - Finally make BPE training code fully work. My initial code could pass the pytest, but failed to be trained on very large corpus. But my current code works. When the input data is very large, many buried issues will appear. Testing is really important.
 
 July 15, 2026 - Finished all BPE related part. Too busy recently, plan to accelerate the progress now.
+
+July 19, 2026 - Finished all building blocks in assignnment 1 and passed all tests, what remains is to finished the real training loops, but I will first go to assignment 2, since I have learned a lot from implementing all these building blocks, and I really enjoy using einops. 
+
+Summary1: In fact, what really costs me a lot of time is how to implement cached bpe training code. By manually try a lot of small corpus, I finally completed designing data structures (hashing, linked list, etc.) to pass the tests.
+
+![Figure 1](figures/final.png)
